@@ -35,8 +35,7 @@ triple_coincidences=[[evH,evL,evV] for evH in eventsH for evL in eventsL for evV
                             if (evH.parameters.tmplt_index==evL.parameters.tmplt_index)
                             &  (evH.parameters.tmplt_index==evV.parameters.tmplt_index)]
 
-""" runs MBTA to compute the MFO for templates in a sub bank """
-qualcosa
+
 
 """ Computes the ranking """
 galaxies_ranking=rank_galaxies(galaxies,triple_coincidences,TriggerTime)
