@@ -1,7 +1,8 @@
-em_mbta_v05.......is the module containing the definitions of Galaxy and GWEvents classes.
+em_mbta_v05.......is the module containing the definitions of Galaxy and GWEvents classes used in em_mbta_cohSNR.
 
 em_mbta_cohSNR ...is the code that computes the coherent SNR and ranks the galaxies.
                   It contains the definitions of the functions that are called in it.
 
-run_em_mbta.......is the code that actually runs, captures the gcn notices, prepares the files 
-                  and launches em_mbta_cohSNR
+run_em_mbta.......is the code that actually runs, captures the gcn notices, queries the
+                  galaxy catalog and prints on file the coordinates of galaxies within the 90%c.l.
+                  of the skymap and runs em_mbta_cohSNR.
