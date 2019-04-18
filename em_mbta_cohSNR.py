@@ -91,6 +91,8 @@ def compute_proj_matrix(triple_ev,galaxy,TriggerTime):
     
     return M
 
+   
+   
 def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
     """ Prepares the MFO array that is necessary for cohSNR. Time series are arragned
         according to the time delays between detectors for the given galaxy and trigger time """
@@ -209,6 +211,7 @@ def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
     return MFO_HLV,time_origin
 
 
+   
 def compute_cohSNR(triple_ev,galaxy,TriggerTime):
     """ computes the coherent snr time series and return a np.array with
         the value and the (approximate) gps time of its maximum """
@@ -224,6 +227,8 @@ def compute_cohSNR(triple_ev,galaxy,TriggerTime):
 
     return max_cohSNR,time_of_max_coh_SNR
 
+   
+   
 def get_gw_events(tStart,duration,ifo):
     """ Returns a list of GW events, instancies of the GWEvent class, for given input parameters"""
     events=[]
@@ -241,6 +246,8 @@ def get_gw_events(tStart,duration,ifo):
             event=event[0].next
     return events
 
+   
+   
 def get_galaxies(galFile):
     """ Input: comma-separated file with ra and dec coordinates of galaxies withing skymap;     
         Output: list of galaxies, instancies of the Galaxy class defined in em_mbta"""
