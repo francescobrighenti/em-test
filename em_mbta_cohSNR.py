@@ -94,7 +94,7 @@ def compute_proj_matrix(triple_ev,galaxy,TriggerTime):
    
    
 def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
-    """ Prepares the MFO array that is necessary for cohSNR. Time series are arragned
+    """ Prepares the MFO array that is necessary for cohSNR. Time series are arranged
         according to the time delays between detectors for the given galaxy and trigger time """
     reference_ifo=None
     max_SNR=0
@@ -104,7 +104,7 @@ def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
 
     for event in triple_ev:
         event.get_mfo()
-        if event.parameters.rwSNR > max_SNR :
+        if event.parameters.rwSNR > max_SNR : # selects the reference ifo according to the value of re-weightedSNR
             max_SNR=event.parameters.rwSNR
             reference_ifo=event.ifo
             t_ref=event.parameters.GTime
@@ -131,7 +131,7 @@ def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
         [galaxy.antenna_patterns_V[0]*triple_ev[2].mfo_data[:,1]],
         [galaxy.antenna_patterns_V[1]*triple_ev[2].mfo_data[:,1]]])
 
-    #### append zeros to time series according to the time delay 
+    #### appends zeros to time series according to the time delay 
     #### in order to prepare them to be summed together     
     
     shift_max=abs(int(np.around(max_delay/delta_t)))
@@ -213,7 +213,7 @@ def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
 
    
 def compute_cohSNR(triple_ev,galaxy,TriggerTime):
-    """ computes the coherent snr time series and return a np.array with
+    """ computes the coherent snr time series and returns 
         the value and the (approximate) gps time of its maximum """
     MFO_HLV,time_origin = make_MFO_HLV_array(triple_ev,galaxy,TriggerTime)
     M=compute_proj_matrix(triple_ev,galaxy,TriggerTime)
