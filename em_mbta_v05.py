@@ -76,7 +76,7 @@ class Galaxy(object):
 
 class GWEvent(object):
 
-    Params=collections.namedtuple('Parameters',['GTime','tmplt_index','mass1','mass2',
+    Params=collections.namedtuple('Parameters',['tmplt_index','mass1','mass2',
                                     'MChirp','spin1z','spin2z','rwSNR','sigma_sq'])    
                                     #GTime is the vector time origin GPS time [s]
 
@@ -111,11 +111,11 @@ class GWEvent(object):
 
     def get_template_params(self):
         """ Output: named tuple containing the values of the following parameters
-            for the template of the event in consideration: GTime, template index, 
+            for the template of the event in consideration: template index, 
             mass1, mass2, MChirp, spin1z, spin2z,re-weighted SNR and 
             the sensibility of the detector (sigma_sq).
         """
-        self.parameters=self.Params(self.vect[0].GTime,self.event[0].parameters[0],
+        self.parameters=self.Params(self.event[0].parameters[0],
                                 self.event[0].parameters[2],self.event[0].parameters[3],
                                 self.event[0].parameters[4],self.event[0].parameters[5],
                                 self.event[0].parameters[6],self.event[0].parameters[19],
