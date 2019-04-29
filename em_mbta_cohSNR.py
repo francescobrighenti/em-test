@@ -204,9 +204,8 @@ def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
         elif delay_Vref==min_delay:
             Vrw_timeseries=np.hstack((Vrw_timeseries,np.zeros((4,shift_min))))
     else:# raise error
+         pass
 
-
-    
     MFO_HLV=Hrw_timeseries+Lrw_timeseries+Vrw_timeseries
    
     return MFO_HLV,time_origin
