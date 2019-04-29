@@ -12,8 +12,8 @@ V1=pycbc.detector.Detector('V1')
 
 class Galaxy(object):
 
-    def __init__(self,inputfile,ra,dec):
-        self.source=str(inputFile)
+    def __init__(self,galFile,ra,dec):
+        self.source=str(galFile)
         self.ra=ra
         self.dec=dec
         self.time_delays=None
