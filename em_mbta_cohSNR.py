@@ -104,7 +104,6 @@ def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
     ### extracts the MFO time series af the events and identifies the reference ifo
 
     for event in triple_ev:
-        event.get_mfo()
         if event.parameters.rwSNR > max_SNR : # selects the reference ifo according to the value of re-weightedSNR
             max_SNR=event.parameters.rwSNR
             reference_ifo=event.ifo
@@ -240,6 +239,7 @@ def get_gw_events(tStart,duration,ifo):
         ev=em.GWEvent(event,inputFile,ifo)
         ev.get_template_params()
         if ev.parameters.mass1 <= 3 and ev.parameters.mass2 <= 3 : # selects only BNS candidates
+            ev.get_mfo()
             events.append(ev)
             event=event[0].next
         else:
