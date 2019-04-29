@@ -146,7 +146,7 @@ def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
         elif delay_Href==min_delay:
             Hrw_timeseries=np.hstack((np.zeros((4,shift_min)),Hrw_timeseries,
                                     np.zeros((4,shift_max-shift_min))))
-        if delay_Lref==0
+        if delay_Lref==0:
             Lrw_timeseries=np.hstack((Lrw_timeseries,np.zeros((4,shift_max))))
         elif delay_Lref==max_delay:
             Lrw_timeseries=np.hstack((np.zeros((4,shift_max)),Lrw_timeseries))
