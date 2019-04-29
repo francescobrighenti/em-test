@@ -1,4 +1,6 @@
 em_mbta_v05.......is the module containing the definitions of Galaxy and GWEvents classes used in em_mbta_cohSNR.
+                  In order to allow it to use lal packages, it must be imported in the environment:
+                  source /virgoApp/lalsuite/v6r48p1/Linux-x86_64-CL7/etc/lalsuite-user-env.sh 
 
 em_mbta_cohSNR ...is the code that computes the coherent SNR and ranks the galaxies.
                   It contains the definitions of the functions that are called in it.
