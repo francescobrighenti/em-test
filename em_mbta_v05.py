@@ -94,8 +94,8 @@ class GWEvent(object):
             Output: 2D numpy array with the matched filtering output in phase and quadrature
         """
         PyFd.FrEventReadData(self.i_file,self.event);
-        self.vect=PyFd.FrEventGetVectF(self.event,"{ifo}1:MF output - phase".format(ifo=self.ifo))
-        Quad_vect=PyFd.FrEventGetVectF(self.event,"{ifo}1:MF output - quadrature".format(ifo=self.ifo))
+        self.vect=PyFd.FrEventGetVectF(self.event,"{ifo}1:MFO_measured_P".format(ifo=self.ifo))
+        Quad_vect=PyFd.FrEventGetVectF(self.event,"{ifo}1:MFO_measured_Q".format(ifo=self.ifo))
         Phase_vect=self.vect
 
         A=Phase_vect[0].nData
