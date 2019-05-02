@@ -238,9 +238,9 @@ def get_gw_events(tStart,duration,ifo):
     event=PyFd.FrEventReadTF(iFile,"MbtaHLV-Chi2OK-clustered", tStart, duration, 0, 0)
     while(event):
         ev=em.GWEvent(event,inputFile,ifo)
+        ev.get_mfo()
         ev.get_template_params()
         if ev.parameters.mass1 <= 3 and ev.parameters.mass2 <= 3 : # selects only BNS candidates
-            ev.get_mfo()
             events.append(ev)
             event=event[0].next
         else:
