@@ -73,17 +73,17 @@ def compute_proj_matrix(triple_ev,galaxy,TriggerTime):
                 interest galaxy and trigger time (is sufficient as reference time for the scope)"""
     galaxy.get_antenna_patterns(TriggerTime)
     wp=np.array([
-        [np.sqrt(triple_ev[0].parameters.sigma_sq) * galaxy.antenna_patterns_H[0]],
-        [np.sqrt(triple_ev[1].parameters.sigma_sq) * galaxy.antenna_patterns_L[0]],
-        [np.sqrt(triple_ev[2].parameters.sigma_sq) * galaxy.antenna_patterns_V[0]]])
+        np.sqrt(triple_ev[0].parameters.sigma_sq) * galaxy.antenna_patterns_H[0],
+        np.sqrt(triple_ev[1].parameters.sigma_sq) * galaxy.antenna_patterns_L[0],
+        np.sqrt(triple_ev[2].parameters.sigma_sq) * galaxy.antenna_patterns_V[0]])
     wc=np.array([
-        [np.sqrt(triple_ev[0].parameters.sigma_sq) * galaxy.antenna_patterns_H[1]],
-        [np.sqrt(triple_ev[1].parameters.sigma_sq) * galaxy.antenna_patterns_L[1]],
-        [np.sqrt(triple_ev[2].parameters.sigma_sq) * galaxy.antenna_patterns_V[1]]])
+        np.sqrt(triple_ev[0].parameters.sigma_sq) * galaxy.antenna_patterns_H[1],
+        np.sqrt(triple_ev[1].parameters.sigma_sq) * galaxy.antenna_patterns_L[1],
+        np.sqrt(triple_ev[2].parameters.sigma_sq) * galaxy.antenna_patterns_V[1]])
     
     a=np.dot(wp,wp)
     b=np.dot(wc,wc)
-    c=np.dot(wp.wc)
+    c=np.dot(wp,wc)
     det=a*b-c**2
     zeros=np.zeros((2,2))
     block=np.array([[b, -c],
@@ -215,8 +215,9 @@ def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
 def compute_cohSNR(triple_ev,galaxy,TriggerTime):
     """ computes the coherent snr time series and returns 
         the value and the (approximate) gps time of its maximum """
-    MFO_HLV,time_origin = make_MFO_HLV_array(triple_ev,galaxy,TriggerTime)
     M=compute_proj_matrix(triple_ev,galaxy,TriggerTime)
+    MFO_HLV,time_origin = make_MFO_HLV_array(triple_ev,galaxy,TriggerTime)
+    
 
     cohSNR=np.einsum('it,ij,jt->t',MFO_HLV,M,MFO_HLV)  # as Eq.(2.26) in Harry-Fairhurst. t can be viewed as time index
 
