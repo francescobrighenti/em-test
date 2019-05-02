@@ -32,7 +32,7 @@ class Galaxy(object):
             sky location; i.e. return t1-t2 where t1 is the arrival time at the "current detector"
             (H for dtH, V for dtV etc) and t2 is the arrival time in the reference ifo.
         """
-        ref_ifo=pycbc.detector('{ifo}1'.format(ifo=reference_ifo))
+        ref_ifo=pycbc.detector.Detector('{ifo}1'.format(ifo=reference_ifo))
 
         def dtH(ra,dec):
             return H1.time_delay_from_other_detector(other_detector=ref_ifo, 
