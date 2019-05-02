@@ -35,13 +35,13 @@ class Galaxy(object):
         ref_ifo=pycbc.detector.Detector('{ifo}1'.format(ifo=reference_ifo))
 
         def dtH(ra,dec):
-            return H1.time_delay_from_other_detector(other_detector=ref_ifo, 
+            return H1.time_delay_from_detector(other_detector=ref_ifo, 
                                 right_ascension=ra,declination=dec, t_gps=gps_time)
         def dtL(ra,dec):
-            return L1.time_delay_from_other_detector(other_detector=ref_ifo, right_ascension=ra,
+            return L1.time_delay_from_detector(other_detector=ref_ifo, right_ascension=ra,
                                                     declination=dec, t_gps=gps_time)
         def dtV(ra,dec):
-            return V1.time_delay_from_other_detector(other_detector=ref_ifo, right_ascension=ra,
+            return V1.time_delay_from_detector(other_detector=ref_ifo, right_ascension=ra,
                                                     declination=dec, t_gps=gps_time)
             
         self.time_delays=np.array([dtH(self.ra,self.dec),dtL(self.ra,self.dec),
