@@ -65,7 +65,7 @@ class Galaxy(object):
 
         def VFpc(ra,dec):
             Fplus,Fcross=V1.antenna_pattern(right_ascension=ra, declination=dec, polarization=0,
-                                            tgps=gps_time)
+                                            t_gps=gps_time)
             return np.array([Fplus,Fcross])
 
 
