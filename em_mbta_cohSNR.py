@@ -25,9 +25,9 @@ tStart=TriggerTime-0.5 #### per esempio...
 
 """ prepares the lists with GW Events for each ifo for the specified
     start-time and  duration""" 
-eventsH=get_gw_events(tStart,duration=1,H)
-eventsL=get_gw_events(tStart,duration=1,L)
-eventsV=get_gw_events(tStart,duration=1,V)
+eventsH=get_gw_events(tStart,duration=1,"H")
+eventsL=get_gw_events(tStart,duration=1,"L")
+eventsV=get_gw_events(tStart,duration=1,"V")
 
 
 """ re-organizes the events to make lists of triple detection for the same template"""
