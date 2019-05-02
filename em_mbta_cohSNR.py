@@ -22,12 +22,13 @@ with open("GCNheader.txt") as GCNheader:
     TriggerTime=
 
 tStart=TriggerTime-0.5 #### per esempio...
+duration=
 
 """ prepares the lists with GW Events for each ifo for the specified
     start-time and  duration""" 
-eventsH=get_gw_events(tStart,duration=1,"H")
-eventsL=get_gw_events(tStart,duration=1,"L")
-eventsV=get_gw_events(tStart,duration=1,"V")
+eventsH=get_gw_events(tStart,duration,"H")
+eventsL=get_gw_events(tStart,duration,"L")
+eventsV=get_gw_events(tStart,duration,"V")
 
 
 """ re-organizes the events to make lists of triple detection for the same template"""
@@ -231,10 +232,10 @@ def compute_cohSNR(triple_ev,galaxy,TriggerTime):
 def get_gw_events(tStart,duration,ifo):
     """ Returns a list of GW events, instancies of the GWEvent class, for given input parameters"""
     events=[]
-    ffl=vt.FrameFile("Mbta%c1_RX_Clstr.ffl"%(ifo))
-    inputFile=ffl.get_frame(TriggerTime) ### dove entra l'informazione dell'ifo??
-    iFile=PyFd.FrFileINew(inputFile) ### come trovare l'input file?
-    event=PyFd.FrEventReadTF(iFile,"Mbta%c_00-Chi2OK"%(ifo), tStart, duration, 0, 0)
+    #ffl=vt.FrameFile("Mbta%c1_RX_Clstr.ffl"%(ifo))
+    inputFile="MbtaHLV-Chi2OK-clustered.gwf" #ffl.get_frame(TriggerTime) 
+    iFile=PyFd.FrFileINew(inputFile) 
+    event=PyFd.FrEventReadTF(iFile,"MbtaHLV-Chi2OK-clustered", tStart, duration, 0, 0)
     while(event):
         ev=em.GWEvent(event,inputFile,ifo)
         ev.get_template_params()
