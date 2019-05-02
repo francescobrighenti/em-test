@@ -215,9 +215,9 @@ def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
 def compute_cohSNR(triple_ev,galaxy,TriggerTime):
     """ computes the coherent snr time series and returns 
         the value and the (approximate) gps time of its maximum """
-    MFO_HLV,time_origin = make_MFO_HLV_array(triple_ev,galaxy,TriggerTime)
     M=compute_proj_matrix(triple_ev,galaxy,TriggerTime)
-
+    MFO_HLV,time_origin = make_MFO_HLV_array(triple_ev,galaxy,TriggerTime)
+    
     cohSNR=np.einsum('it,ij,jt->t',MFO_HLV,M,MFO_HLV)  # as Eq.(2.26) in Harry-Fairhurst. t can be viewed as time index
 
     max_cohSNR=max(cohSNR)
