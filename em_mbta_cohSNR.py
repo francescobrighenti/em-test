@@ -73,17 +73,17 @@ def compute_proj_matrix(triple_ev,galaxy,TriggerTime):
                 interest galaxy and trigger time (is sufficient as reference time for the scope)"""
     galaxy.get_antenna_patterns(TriggerTime)
     wp=np.array([
-        [np.sqrt(triple_ev[0].parameters.sigma_sq) * galaxy.antenna_patterns_H[0]],
-        [np.sqrt(triple_ev[1].parameters.sigma_sq) * galaxy.antenna_patterns_L[0]],
-        [np.sqrt(triple_ev[2].parameters.sigma_sq) * galaxy.antenna_patterns_V[0]]])
+        np.sqrt(triple_ev[0].parameters.sigma_sq) * galaxy.antenna_patterns_H[0],
+        np.sqrt(triple_ev[1].parameters.sigma_sq) * galaxy.antenna_patterns_L[0],
+        np.sqrt(triple_ev[2].parameters.sigma_sq) * galaxy.antenna_patterns_V[0]])
     wc=np.array([
-        [np.sqrt(triple_ev[0].parameters.sigma_sq) * galaxy.antenna_patterns_H[1]],
-        [np.sqrt(triple_ev[1].parameters.sigma_sq) * galaxy.antenna_patterns_L[1]],
-        [np.sqrt(triple_ev[2].parameters.sigma_sq) * galaxy.antenna_patterns_V[1]]])
+        np.sqrt(triple_ev[0].parameters.sigma_sq) * galaxy.antenna_patterns_H[1],
+        np.sqrt(triple_ev[1].parameters.sigma_sq) * galaxy.antenna_patterns_L[1],
+        np.sqrt(triple_ev[2].parameters.sigma_sq) * galaxy.antenna_patterns_V[1]])
     
     a=np.dot(wp,wp)
     b=np.dot(wc,wc)
-    c=np.dot(wp.wc)
+    c=np.dot(wp,wc)
     det=a*b-c**2
     zeros=np.zeros((2,2))
     block=np.array([[b, -c],
@@ -117,20 +117,20 @@ def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
     min_delay=min(galaxy.time_delays[galaxy.time_delays!=0])
 
     Hrw_timeseries=np.array([
-        [galaxy.antenna_patterns_H[0]*triple_ev[0].mfo_data[:,0]],  # Fplus_H  h_phase
-        [galaxy.antenna_patterns_H[1]*triple_ev[0].mfo_data[:,0]],  # Fcross_H h_phase
-        [galaxy.antenna_patterns_H[0]*triple_ev[0].mfo_data[:,1]],  # Fplus_H  h_quadr
-        [galaxy.antenna_patterns_H[1]*triple_ev[0].mfo_data[:,1]]]) # Fcross_H h_quadr 
+        galaxy.antenna_patterns_H[0]*triple_ev[0].mfo_data[:,0],  # Fplus_H  h_phase
+        galaxy.antenna_patterns_H[1]*triple_ev[0].mfo_data[:,0],  # Fcross_H h_phase
+        galaxy.antenna_patterns_H[0]*triple_ev[0].mfo_data[:,1],  # Fplus_H  h_quadr
+        galaxy.antenna_patterns_H[1]*triple_ev[0].mfo_data[:,1]]) # Fcross_H h_quadr 
     Lrw_timeseries=np.array([
-        [galaxy.antenna_patterns_L[0]*triple_ev[1].mfo_data[:,0]],
-        [galaxy.antenna_patterns_L[1]*triple_ev[1].mfo_data[:,0]],
-        [galaxy.antenna_patterns_L[0]*triple_ev[1].mfo_data[:,1]],
-        [galaxy.antenna_patterns_L[1]*triple_ev[1].mfo_data[:,1]]])
+        galaxy.antenna_patterns_L[0]*triple_ev[1].mfo_data[:,0],
+        galaxy.antenna_patterns_L[1]*triple_ev[1].mfo_data[:,0],
+        galaxy.antenna_patterns_L[0]*triple_ev[1].mfo_data[:,1],
+        galaxy.antenna_patterns_L[1]*triple_ev[1].mfo_data[:,1]])
     Vrw_timeseries=np.array([
-        [galaxy.antenna_patterns_V[0]*triple_ev[2].mfo_data[:,0]],
-        [galaxy.antenna_patterns_V[1]*triple_ev[2].mfo_data[:,0]],
-        [galaxy.antenna_patterns_V[0]*triple_ev[2].mfo_data[:,1]],
-        [galaxy.antenna_patterns_V[1]*triple_ev[2].mfo_data[:,1]]])
+        galaxy.antenna_patterns_V[0]*triple_ev[2].mfo_data[:,0],
+        galaxy.antenna_patterns_V[1]*triple_ev[2].mfo_data[:,0],
+        galaxy.antenna_patterns_V[0]*triple_ev[2].mfo_data[:,1],
+        galaxy.antenna_patterns_V[1]*triple_ev[2].mfo_data[:,1]])
 
     #### appends zeros to time series according to the time delay 
     #### in order to prepare them to be summed together     
