@@ -117,20 +117,20 @@ def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
     min_delay=min(galaxy.time_delays[galaxy.time_delays!=0])
 
     Hrw_timeseries=np.array([
-        [galaxy.antenna_patterns_H[0]*triple_ev[0].mfo_data[:,0]],  # Fplus_H  h_phase
-        [galaxy.antenna_patterns_H[1]*triple_ev[0].mfo_data[:,0]],  # Fcross_H h_phase
-        [galaxy.antenna_patterns_H[0]*triple_ev[0].mfo_data[:,1]],  # Fplus_H  h_quadr
-        [galaxy.antenna_patterns_H[1]*triple_ev[0].mfo_data[:,1]]]) # Fcross_H h_quadr 
+        galaxy.antenna_patterns_H[0]*triple_ev[0].mfo_data[:,0],  # Fplus_H  h_phase
+        galaxy.antenna_patterns_H[1]*triple_ev[0].mfo_data[:,0],  # Fcross_H h_phase
+        galaxy.antenna_patterns_H[0]*triple_ev[0].mfo_data[:,1],  # Fplus_H  h_quadr
+        galaxy.antenna_patterns_H[1]*triple_ev[0].mfo_data[:,1]]) # Fcross_H h_quadr 
     Lrw_timeseries=np.array([
-        [galaxy.antenna_patterns_L[0]*triple_ev[1].mfo_data[:,0]],
-        [galaxy.antenna_patterns_L[1]*triple_ev[1].mfo_data[:,0]],
-        [galaxy.antenna_patterns_L[0]*triple_ev[1].mfo_data[:,1]],
-        [galaxy.antenna_patterns_L[1]*triple_ev[1].mfo_data[:,1]]])
+        galaxy.antenna_patterns_L[0]*triple_ev[1].mfo_data[:,0],
+        galaxy.antenna_patterns_L[1]*triple_ev[1].mfo_data[:,0],
+        galaxy.antenna_patterns_L[0]*triple_ev[1].mfo_data[:,1],
+        galaxy.antenna_patterns_L[1]*triple_ev[1].mfo_data[:,1]])
     Vrw_timeseries=np.array([
-        [galaxy.antenna_patterns_V[0]*triple_ev[2].mfo_data[:,0]],
-        [galaxy.antenna_patterns_V[1]*triple_ev[2].mfo_data[:,0]],
-        [galaxy.antenna_patterns_V[0]*triple_ev[2].mfo_data[:,1]],
-        [galaxy.antenna_patterns_V[1]*triple_ev[2].mfo_data[:,1]]])
+        galaxy.antenna_patterns_V[0]*triple_ev[2].mfo_data[:,0],
+        galaxy.antenna_patterns_V[1]*triple_ev[2].mfo_data[:,0],
+        galaxy.antenna_patterns_V[0]*triple_ev[2].mfo_data[:,1],
+        galaxy.antenna_patterns_V[1]*triple_ev[2].mfo_data[:,1]])
 
     #### appends zeros to time series according to the time delay 
     #### in order to prepare them to be summed together     
