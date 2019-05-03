@@ -108,7 +108,7 @@ def make_MFO_HLV_array(triple_ev,galaxy,TriggerTime):
         if event.parameters.rwSNR > max_SNR : # selects the reference ifo according to the value of re-weightedSNR
             max_SNR=event.parameters.rwSNR
             reference_ifo=event.ifo
-            t_ref=event.parameters.GTime
+            t_ref=event.parameters.StartTime
 
     # computes the time of travel between the reference ifo and the 3 ifos
     galaxy.get_relative_time_delays(reference_ifo,TriggerTime)
