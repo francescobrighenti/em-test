@@ -1,0 +1,382 @@
+\documentclass[aps, prd, twocolumn, superscriptaddress, nofootinbib]{revtex4-1}
+%\documentclass[aps, prd, twocolumn, superscriptaddress, nofootinbib]{revtex4}
+\usepackage{graphicx}% Include figure files
+\usepackage{dcolumn}% Align table columns on decimal point
+\usepackage{amssymb}% outlined letters
+\usepackage{amsmath,amssymb,amsfonts,braket}
+%\usepackage[normalem]{ulem}
+% optional packages
+%\usepackage{graphicx}
+%\documentclass[a4paper,english,titlepage,12pt]{report} %dimensioni,capitoli pg successiva,dopo titolo pg nuova,12 punti
+%\usepackage[T1]{fontenc} %imposta codifica font
+%\usepackage[utf8x]{inputenc} %lettere accentate da tastiera
+%\usepackage[english,american,italian]{babel} %per scrivere in italiano
+%\usepackage{booktabs}
+%\usepackage{tabularx}
+%\usepackage{color}
+%\usepackage{caption}
+%\usepackage{subcaption}
+%\pagestyle{plain}
+%\usepackage{slashed}
+\newcommand{\der}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\Eq}[1]{\mbox{Eq. (\ref{eqn:#1})}}
+\newcommand{\Fig}[1]{\mbox{Fig. \ref{fig:#1}}}
+\newcommand{\Sec}[1]{\mbox{Sec. \ref{sec:#1}}}
+
+
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\bea}{\begin{eqnarray}}
+\newcommand{\eea}{\end{eqnarray}}
+\newcommand{\vu}{{\mathbf u}}
+\newcommand{\ve}{{\mathbf e}}
+
+
+\begin{document}
+
+\title{Low latency ranking of galaxies within a gravitational-wave sky localization}
+\author{Francesco Brighenti$^*$$^{1,2}$, Giuseppe Greco$^{1,2}$, Gianluca Guidi$^{1,2}$, Francesco Piergiovanni$^{1,2}$}
+
+\address{$^{1,2}$Dipartimento di Scienze Pure E Applicate, Universit\`a degli Studi di Urbino "Carlo Bo",\\
+Urbino, Italy/INFN-Firenze\\
+$^*$E-mail: francesco.brighenti@uniurb.it}
+
+\pagenumbering{arabic}
+\begin{abstract}
+The recent detection of a binary neutron star merger by the LIGO and Virgo collaborations (LVC) and its corresponding electromagnetic counterpart from several astronomer teams marks the birth of multi-messenger astronomy\cite{GW170817}.
+Due to the size of the sky localization from a GW signal only, which can span tens to thousands of square degrees, there are significant benefits to rank the galaxies inside these large sky areas to maximize the probability of counterpart detection.
+Here we present a new procedure to query the galaxy catalogs, rank the galaxies and eventually define a prior for time allocation and scheduling algorithms.
+\end{abstract}
+\maketitle
+
+\section{Introduction}
+
+Multi-messenger astronomy demonstrated its scientific potential from the very first event observed via gravitational waves and via electromagnetic radiation, GW170817 \cite{GW170817}. The success of the observational campaign following GW170817 originates also from  some lucky coincidences, beginning with the fact that this has been the closest event to Earth and with the highest signal to noise ratio (SNR) so far detected by the gravitational waves detectors. This helped significantly in localising of the source, as the skymap produced shortly after limited the area containing the source with 90\% probability to just 28 deg$^2$, instead of the usual hundreds or thousands deg$^2$.
+
+ This typical large value of the 90\% area of the skymap is due to the method used to identify candidates gravitational events using the coincident SNR to assign a value to the total SNR:  the current strategy adopted by the pipelines used by the LVC for online detection of a gravitational wave signal is to consider whether all the online detectors find a  trigger with high SNR from the same template in each detector in a time window which is compatible with the time of flight between the detectors. While using the coincident SNR limits the computational costs, allowing a quick identification of candidate events, it comes at the cost of neglecting some information that could reduce the area of the 90\% probability region.
+
+The coherent SNR requires also the phases and the amplitudes of the signals recorded in each detector to be consistent among each other with the passage of a gravitational wave coming from a certain sky position, according to the sensitivity of each detector for a gravitational wave coming from that specific direction.
+%Assuming that the triggers are due to a gravitational waves coming from a certain point of the sky one expect not only trigger times compatible with the  time of flight of a wave between the detectors, but also the phases and the amplitudes of the signals recorded in each detector to be coherent among each other. The coherent SNR includes exactly these informations to assign a value to the total SNR.
+ Clearly, a full-sky search with coherent SNR is computationally more expensive than a full-sky search with coincident SNR and therefore the latter is still currently preferred by the online detection pipelines.
+On the other hand, it is extremely  important to identify the source of the event in order to be able to capture the electromagnetic counterpart as soon as possible.
+
+Our idea is to compute the coherent SNR using the  only for a reduced number of points in the sky, identified by the galaxies inside the region at the 90\% c. l. of the skymap produced by BAYESTAR. The computational cost and time are further reduced by taking advantage of the matched filtering already performed by Virgo online detection pipeline, MBTA.
+
+\section{From coincident  to coherent SNR}
+In this section we quickly review the standard application of matched-filtering in gravitational waves detection and the definition of the coherent SNR. See Ref.\cite{cohSNR} for a detailed derivation.
+
+\subsection{Coincident SNR}
+Following then the standard matched filtering theory, given the  output of the detector $i$,
+\begin{equation}
+s(t)=n(t)+h(t)\, ,
+\end{equation}
+we assume that the noise $n(t)$ is Gaussian and stationary and with power spectral density (PSD) $S_n(f)$ defined as
+\begin{equation}
+\langle \tilde{n}(f)\tilde{n}^{*}(f')\rangle=\frac{1}{2}\delta(f-f')S_n(f)\, .
+\end{equation}
+to define the single detector inner product between two time series $a(t_0)$ and $b(t_0+t)$,
+\begin{equation}
+(a|b)(t)=4 \Re\int_0^\infty df\, \frac{\tilde{a}(f)\tilde{b}^*(f)}{S_n(f)}e^{-i2\pi ft}\, .
+\end{equation}
+
+The odds of a signal $h$ being present in the data can be evaluated via the likelihood
+\begin{equation}
+\Lambda_h(t)=\frac{P(s|h)}{P(s|0)}=\frac{e^{-(s-h|s-h)/2}}{e^{-(s|s)/2}}\, ,
+\end{equation}
+ and therefore the log-likelihood  for the single interferometer $i$ takes the form
+ \begin{equation}\label{Lambda}
+ \ln\Lambda_h(t)=(s|h)(t)-\frac{1}{2}(h|h)(t)\, .
+ \end{equation}
+This allows us to define the SNR time series for the waveform $h$ as
+\begin{equation}
+\rho_h^2(t)=2\ln\Lambda_h(t)
+\end{equation}
+
+Consider now to have two detectors $i,j$. What a typical online detection pipeline does in order to identify interesting candidates is to compute $\rho_h(t)$ for each detector output $s^i(t)\, ,s^j(t)$ and for every waveform template within a template bank. If the time series $\rho^i_h(t),\rho^j_h(t)$ of the same template $h$ exceed a fixed threshold  $\bar{\rho}$ for times $t_i\, ,t_j$ such that $|t_i-t_j|\leq d_{ij}/c$, where $d_{ij}$ is the distance between the detectors, then the pipeline denotes it as a candidate event with coincident SNR given by
+\begin{equation}
+\rho_{coinc}=\sqrt{[\rho^i_h(t_i)]^2+[\rho^j_h(t_j)]^2}\, .
+\end{equation}
+
+\subsection{Coherent SNR}
+
+To define the coherent SNR it is convenient to take advantage of some peculiarities of the signal of interest at the frequencies that are relevant to the ground-based interferometers. In particular, BNS are expected to have components with small spin and their orbit to be non-precessing and circular by the time they reach the frequencies to which LIGO-Virgo are sensitive.
+In this case we can describe the strain detected by a give  detector $i$ in terms of phase and quadrature components $h_0$,$h_{ \frac{\pi}{2}}$. Denoting as $D$ the distance of the source, $\iota$ its inclination angle, $\psi$ the polarization angle and $\phi_0$ the coalescence phase, we can write
+\begin{equation}\label{singledetectorsignalAmu}
+h^i(t)=\sum^4_{\mu=1}\mathcal{A}^\mu(D,\psi,\phi_0,\iota)h^i_\mu(t)
+\end{equation}
+where the components $h_\mu^i$ are given by
+\begin{equation}
+\begin{split}
+h_1^i(t)&=F^i_+(\theta^i,\, \phi^i,\, \chi^i)h_0(t) \, , \\
+h_2^i(t)&=F^i_\times( \theta^i,\, \phi^i,\, \chi^i)h_0(t) \, , \\
+h_3^i(t)&=F^i_+(\theta^i,\, \phi^i,\, \chi^i)h_{\frac{\pi}{2}}(t) \, , \\
+h_4^i(t)&=F^i_\times(\theta^i,\, \phi^i,\, \chi^i)h_{\frac{\pi}{2}}(t) \, , \\
+\end{split}
+\end{equation}
+$F^i_{+,\times}$ being the detector response functions to the plus ($+$) and cross ($\times$) polarization components of the waveform\footnote{These are given in terms of $h_0$ and $h_{ \frac{\pi}{2}}$ by $h_+(t)=\mathcal{A}^1h_0(t)+\mathcal{A}^3h_{ \frac{\pi}{2}}(t),\, h_\times(t)=\mathcal{A}^2h_0(t)+\mathcal{A}^4h_{ \frac{\pi}{2}}(t)$}. $F^i_{+,\times}$ are know functions of the sky location angles of the source $(\theta\,,\phi)$ and the polarization angle $\chi$, that describes the choice of axis in the plane orthogonal to the direction of propagation.
+
+The amplitudes $\mathcal{A}^\mu$ depend on the geometry of the source with respect to the Earth, and are given by
+\begin{equation}\label{amplitudes}
+\begin{split}
+\mathcal{A}^1 &=A_+\cos 2\phi_0\cos 2\psi-A_\times\sin 2 \phi_0\sin 2_\psi \, , \\
+\mathcal{A}^2 &=A_+\cos 2\phi_0\sin 2\psi+A_\times\sin 2 \phi_0\cos 2_\psi \, , \\
+\mathcal{A}^3 &=-A_+\sin 2\phi_0\cos 2\psi-A_\times\cos 2 \phi_0\sin2_\psi \, , \\
+\mathcal{A}^4 &=-A_+\sin 2\phi_0\sin 2\psi+A_\times\cos 2 \phi_0\cos2_\psi \, , \\
+\end{split}
+\end{equation}
+where
+\begin{equation}
+\begin{split}
+A_+&=\frac{D_0}{D}\frac{1+\cos^2 \iota}{2}\, ,\\
+A_\times&=\frac{D_0}{D}\cos \iota\, ,
+\end{split}
+\end{equation}
+and $D_0$ is a fiducial distance which is used to scale the amplitudes $\mathcal{A}^\mu$ and waveforms $h_{0,\, \frac{\pi}{2}}$.
+
+Assuming that detectors have independent noises translates into requiring that,
+\begin{equation}
+\langle \tilde{n}^i(f)\tilde{n}^{j*}(f')\rangle=\frac{1}{2}\delta^{ij}\delta(f-f')S^i_n(f)\, .
+\end{equation}
+We now denote $t$ as the time measured at a fixed position; for later convenience we decide it to be one of the detectors in the network (another sensible choice would be, e.g., the geocenter) and defining the multi-detector inner product as
+\begin{equation}
+({\bf a}|{\bf b})(t):= \sum_i(a^i|b^i)(t-t_i)\, .
+\end{equation}
+where $t_i$ is the time of flight for a wave coming from a given position in the sky between the reference detector and the detector $i$.
+The multi-detector likelihood is therefore given by
+\begin{equation}
+\ln\Lambda_h(t)=({\bf s}|{\bf h})-\frac{1}{2}({\bf h}|{\bf h})\, .
+\end{equation}
+Plugging in the expression given in Eq.(\ref{singledetectorsignalAmu}), the multi-detector likelihood takes the form
+\begin{equation}\label{loglikeAmu}
+\ln\Lambda_h(t)=\mathcal{A}^\mu({\bf s}|{\bf h}_\mu)-\frac{1}{2}\mathcal{A}^\mu\mathcal{M}_{\mu\nu}\mathcal{A}^\nu
+\end{equation}
+where the matrix $\mathcal{M}_{\mu\nu}$ is given by
+\begin{equation}
+\mathcal{M}_{\mu\nu}:=({\bf h}_\mu|{\bf h}_\nu)\, .
+\end{equation}
+As the CBC signal spend a large number of cycles in the sensitivity band of the detector and consequently the 0 and $\pi/2$ phases will be close to orthogonal.  Also, since the frequency evolves slowly, the amplitudes of the two phases will be close to equal; this translates into
+\begin{equation}
+\begin{split}
+(h_0^i|h^i_{\frac{\pi}{2}})&\approx 0 \\
+(h_0^i|h_0^i)&\approx (h^i_{\frac{\pi}{2}}|h^i_{\frac{\pi}{2}}):=(\sigma^i)^2\, .
+\end{split}
+\end{equation}
+Therefore, the matrix simplifies to a block structure
+\begin{equation}
+\mathcal{M}_{\mu\nu}=\begin{pmatrix} 
+A & C & 0 & 0\\
+C & B & 0 & 0\\
+0 & 0 & A & C
+\\ 0 & 0 & C &B
+\end{pmatrix}
+\end{equation}
+where
+\begin{equation}
+\begin{split}
+A&=\sum_i(\sigma^iF_+^i)^2\\
+B&=\sum_i(\sigma^iF_\times^i)^2\\
+C&=\sum_i(\sigma^iF_+^i)(\sigma^iF_\times^i)\, .
+\end{split}
+\end{equation}
+
+Taking the derivative of Eq.(\ref{loglikeAmu}) with respect to $\mathcal{A}^\mu$ allows to find the values of $\mathcal{A}^\mu$ that maximize the likelihood. Using these values, we can define the coherent SNR as
+\begin{equation}\label{defcohSNR}
+\rho_{coh}^2(t)=2\max(\ln\Lambda_h(t))=({\bf s}|{\bf h}_\mu)\mathcal{M}^{\mu\nu}({\bf s}|{\bf h}_\nu)\,,
+\end{equation}
+where $\mathcal{M}^{\mu\nu}\mathcal{M}_{\nu\rho}=\delta^\mu_\rho$.
+
+
+\section{MBTA: Multi-Band Template Analysis}
+
+Running an online analysis presents a number of challenges such as the availability of minimal data quality information to veto instrumental and environmental noise, and the requirement to analyse data faster than real time to maintain an online analysis. The Multi-Band Template Analysis (MBTA) \cite{Abadie2012,Adams2015} is a low-latency, computationally cost effective, coincidence analysis pipeline used to detect GWs from CBCs. MBTA uses the standard matched filter \cite{WaisZub1962} to extract CBC signals from the GW channel data of each detector in the network independently, before results are combined to find GW candidate events. The focus of MBTA is the online detection of GW candidate events with sub-minute latency, but it can also be used for data quality studies due to its low computational cost. MBTA determines GW candidate event significance by calculating the false alarm rate (FAR) using data immediately before the event to evaluate the detector background noise at the time of the event.
+
+GW candidate events detected by MBTA are uploaded to the Gravitational Wave Candidate Event Database (GraCEDb \cite{gracedb}), an automated archive where details about the GW candidate event and follow-up studies are recorded. There are a number of other modelled GW search pipelines which also upload events to GraCEDb, namely GSTLAL \cite{Privitera2014} and PyCBC \cite{Usman2015}, as well as unmodelled search pipelines such as CWB \cite{Klimenko2008}. MBTA events uploaded to GraCEDb are analysed with Bayestar \cite{Singer2014}, a rapid Bayesian position reconstruction code that produces probability sky maps for the sky localisation of GW candidate events. GW candidate events with high significance are validated by a number of human monitors. Events which pass the validation process are distributed as a LIGO/Virgo GCN CIRCULAR \cite{gcn} to astronomical partners for EM follow-up. 
+
+\subsection{Single detector analysis}
+
+The MBTA pipeline performs a coincident analysis, analysing each detector in the network separately before the results are combined to identify coincident events. To reduce the computational cost of the matched filtering, which is the most expensive element of the analysis, MBTA uses the novel approach of splitting the matched filter across two (or more) frequency bands. The boundary frequency between the low frequency (LF) and high frequency (HF) bands, $f_c$, is selected so that the signal-to- noise ratio (SNR) is shared roughly equally between the low and high frequency bands, typically  $f_c \approx 100$ Hz, for the expected sensitivity curve of the advanced detectors. The analysis bandwidth for the advanced detector era will typically be 30Hz to 2048Hz. This multi-band analysis procedure gives a reduction in the computational cost, while losing no SNR on average compared to a matched filter performed with a single band analysis \cite{Marion2003}. Recent studies have found a reduction in the computational cost of the online pipeline configuration relative to an equivalent single band analysis about a factor 7, while the offline pipeline configuration gives a larger reduction of about a factor 11.
+
+The reduction in the computational cost is achieved by using shorter templates in each frequency band, and so the phase of the signal is tracked over fewer cycles. This reduces the number of templates that are required to cover the equivalent parameter space of a single band analysis. Another benefit of using a multi-band analysis is that a reduced sampling rate in time for the low frequency band can be used, by down-sampling in the frequency domain, which reduces the cost of the Fast Fourier Transforms (FFTs) involved in the filtering.
+
+Before running MBTA online, the pipeline must be initialised and a fixed bank of inspiral templates is constructed with a typical minimal match of 97\% \cite{Brown2012}. Currently MBTA uses TaylorF2 waveforms to model BNS waveforms. TaylorF2 is a  frequency domain, post-Newtonian, inspiral-only, quasi-circular, aligned-spin, binary gravitational waveform approximant. Its main advantages are that it is very fast to compute and has a simple closed-form expression in the frequency domain.
+
+Different choices of the waveform could affect the search efficiency \cite{Tito2014}; in fact there are systematic differences between waveform approximants which could impact the matched filter SNR computation \cite{Buonanno2009, Nitz2013}. This however will not impact seriously the results presented here. The waveform generation and geometric-based template placement is performed using the LALsuite \cite{lalsuite}. This template bank, which covers the parameter space of interest for the specific analysis, is generated at initialisation using a reference noise power spectrum taken at a time when the detectors are performing well.
+
+This template bank is referred to as the ?virtual? template bank, as it is not actually used to perform the matched filtering, as explained below.
+Running the multi-band matched filtering on each frequency band requires a separate ?real? template bank for each frequency band, which is actually used in the matched filtering of the data. The waveforms and the template placement method for the real template banks are the same used for the virtual template bank, but with the 97\% minimal match computed over the relevant frequency range. During initialisation each virtual template is associated with a real template in each frequency band. To perform this association, real templates in each band are match filtered with the virtual template to find the real templates in each band which have the maximal match. The combination parameters, $\delta t$ and $\delta\phi$ which are used when performing the coherent sum of the multi-band results, are also determined from the difference in time and phase between the real templates in the different frequency bands. The filtering produces the matched filter time-series for each frequency band, both in-phase and in-quadrature. 
+
+MBTA requires the virtual template bank, real template banks for each frequency band, calibrated GW channel data from each detector in the network, as well as any available data quality information to perform an analysis online. The power spectral density (PSD) used for the matched filtering is updated using a running average of data that is deemed of observational quality, passing data quality tests.
+
+To combine the multiple frequency bands, the matched filter output is examined in an iterative way. The maximum of the SNR in the match filter output of each frequency
+band for a real template is compared with a threshold $\bar{\rho_R}= 5/2$. If the threshold is exceeded, combinations are made for all virtual templates associated to this real template. The low frequency band SNR time series is up-sampled with a quadratic interpolation to the sampling frequency of the high frequency band.
+The complex output of the match filter for the virtual template $h_V$ is constructed from the output of the match filter of the low and high frequency real templates (denoted by $h_{R_{LF}}$ and $h_{R_{HF}}$ respectively) using the combination parameters $\delta t$ and $\delta \phi$ (time and phase offsets between the low and high frequency bands):
+
+\begin{equation}
+    (s|h_V)(t)= (s|h_{R_{LF}})(t)+e^{i\delta\phi}(s|h_{R_{HF}})(t+\delta t)
+\end{equation}
+where the match filter performed over an interval of frequencies $\Delta f=[25,2048]$ Hz using a sampling frequency for the match filter in each frequency band of twice the
+upper frequency cut-off for that band.
+
+The modulus of the match filter output is then examined at its maximum value to
+extract the signal parameters (time of arrival, coalescence phase, full band SNR). The full band SNR is compared to a global threshold $\rho_V=5$ to produce the single detector trigger list.
+
+\section{Methods}
+We select about 90 gravitational wave sky localizations from Ref.\cite{GoingTheDist} in which a triple detection is considered. The 90\% confidence level for each probability skymap is build using the MOC (Multi Order Coverage map) method based on HEALPix sky tessellation \cite{codiceGiuseppe}.
+MOC is a multi-scale mapping based on HEALPix sky tessellation. It is essentially a simple way to map irregular and complex sky regions into hierarchically grouped predefined cells. Each MOC cell is defined by two numbers: the hierarchy level (HEALPIX ORDER) and the pixel index (HEALPIX NPIX).The NUNIQ scheme defines an algorithm for packing an (ORDER, NPIX) pair into a single integer for compactness \cite{MOC}.
+We compute the MOC region at a given probability level and subsequently, we query databases for retrieving objects whose position falls within this MOC map at 90\% confidence level. The GLADE catalog is used in the analysis \cite{GLADE}.
+
+We compute the sky position of the maximum probability pixel defined by the BAYESTAR pipeline. The healpy package \cite{Healpy} is used to do this.
+
+The values of component masses of the template with highest coincident SNR are passed to a script that prepares a single-template bank that is used for the analysis.
+The template bank and the GPS times related to the each event are input of the function that computes the coherent SNR, lalapps\_cohPTF\_inspiral, looping over the selected galaxies from the GLADE catalog cutting at 1-sigma distance reported in the image's header \cite{cohPTF}.
+
+
+\section{Proof of concept}
+In a small fraction of our datasample (10 cases) the injection positions meet with the highest coherent-SNR values. This fact has motivated our investigation to set up a EM- followUP strategy.
+Two different strategies are planned to optimize a followUP activity in a few minutes after the first rapid sky localization using the coherent SNR measured for the galaxies within the 90\% c. l. The skymap tiling is performed by the GWsky tool \cite{GWSky}.
+
+\subsection{Strategy for telescope with a large Field of View}
+
+We measure the sky distances between
+(i) the position of the injection and the position of the galaxy with the highest coherent SNR; Dist (inj ? MAXsnr) ? median = 6.6.
+(ii) the position of the injection and the maximum probability pixel; Dist (inj ? MAXpix) - ? median = 9.7.
+The two distances are compared in the histograms below. The distance Dist (MAXsnr - inj) is narrower. If the trend will be confirmed, the injection could be promptly imaged in a one/few tile(s) by centering the FoV telescope at the position of the maximum coherent SNR.
+
+\begin{figure}[h]
+\centering
+\scalebox{0.2}{\includegraphics{smallFoV.eps}}
+\caption{\label{fig:vacuum}Distributions of the angular distances between the true location of the injection and the pixel of maximum probability (green) or the galaxy with greatest coherent SNR (red). There is a mild indication of a better performance of our method.}
+\end{figure}
+
+\subsection{Strategy for telescope with a small Field of View}
+
+We rank the coherent SNR from the highest value to the lowest value. The injection position in the rank is determined for testing. In 48 cases over 84 under examination, the galaxy target using the coherent SNR information captures the injection in a better position than galaxies localized in the confidence levels gradually growing. Here, we show a case in which the injection is ranked at the position 3 using the the coherent SNR scenario while in the contour plots approach it is localized at the 41\% c.l. in which 285 galaxies are distributed.
+
+\begin{figure}[h]
+\centering
+\scalebox{0.2}{\includegraphics{largeFoV.eps}}
+\caption{\label{fig:vacuum} A particular case in which the injection is ranked at the position 3 using the the coherent SNR scenario while in the contour plots approach it is localized at the 41\% c.l. in which 285 galaxies are distributed.}
+\end{figure}
+
+
+\subsection{Catalog Completeness}
+forniremo la completezza dinamica del catalogo glade a quella distanza e in quella regione di cielo.
+
+
+
+\section{Implementation in MBTA}
+
+\section{Conclusions and outlook}
+Deep analysis are planning to ensure the validity of the method for a very large sample and verify if the coherent-SNR galaxies approach significantly decreases the allocated time for an EM followUP activity - or in which special cases, if there are.
+At this stage, we note a positive trend when the coherent SNR approach (measured for each galaxy in 90\% c. l.) is applied to tile the skymap compared to the traditional contour- plot method provided in a rapid GW sky localization.
+
+
+\begin{thebibliography}{10}
+
+
+\bibitem{GW170817}
+LIGO and Virgo Collaboration,
+ {\em Phys. Rev. Lett.} {\bf 119} 161101 (2017).
+% coinc to coh SNR section references   
+ \bibitem{cohSNR}
+ I. Harry, S. Fairhurst, 
+ {\em Phys. Rev, D} {\bf 83} 084002 (2011)
+ %%%%%%%%%%%%%%%%%%
+ 
+ 
+ 
+%MBTA section references
+\bibitem{Abadie2012}
+ J. Abadie et al.
+ {\emph{Astron. Astrophys.}} {\bf 541} A155 (2012)
+ 
+ \bibitem{Adams2015}
+ T. Adams,
+ {\emph{Proc. of the 50th Recontres de Moriond Gravitation ARISF}}, pp 327-30 (2015)
+ 
+ \bibitem{WaisZub1962}
+ L. A. Waistein, V. D. Zubakov, 
+ {\emph{Extraction of signals from noise}},
+ (Englewood Cliffs, NJ: Prentice-Hall)
+ 1926
+ 
+ \bibitem{gracedb}
+ https://gracedb.ligo.org
+ 
+ \bibitem{Privitera2014}
+ S. Privitera et al.,
+ {\emph{Phys. Rev. D}} {\bf 89} 024003 (2014)
+ 
+ \bibitem{Usman2015}
+ S. A. Usman et al.,
+ {\emph{Class. Quant. Grav.}} {\bf 33} 215004 (2016)
+ 
+ \bibitem{Klimenko2008}
+ S. Klimenko et al.,
+ {\emph{Class. Quant. Grav.}} {\bf 25} 114029 (2008)
+ 
+ \bibitem{Singer2014}
+ L. Singer et al.,
+ {\emph{Astrophys. J.}} {\bf 795} 105 (2014)
+ 
+ \bibitem{gcn}
+ http://gcn.gsfc.nasa.gov/lvc.html
+ 
+ \bibitem{Marion2003}
+ F. Marion et al.,
+ {\emph{Proc. of the 30th Recontres de Moriond Gravitational Waves and Experimental gravity (Les Arcs, 22-29 March 2003}}
+ 
+ \bibitem{Brown2012}
+ D. Brown et al.,
+ {\emph{Phys. Rev. D}} {\bf 86} 084017 (2012)
+ 
+ \bibitem{Tito2014}
+ T. D. Canton et al.,
+ {\emph{Phys. Rev. D}} {\bf 90} 082004 (2014)
+ 
+ \bibitem{Buonanno2009}
+ A. Buonanno et al.,
+ {\emph{Phys. Rev. D}} {\bf 80} 084043 (2009)
+ 
+ \bibitem{Nitz2013}
+ A.H. Nitz et al.,
+ {\emph{Phys. Rev. D}} {\bf 88} 124039 (2013)
+ 
+ \bibitem{lalsuite}
+ LSC algorithm Library suite,
+ https://lsc-group.phys.uwm.edu/daswg/projects/lalsuite.html
+ %%%%%%%%%%%%%%%%%%%%%%%
+ 
+ 
+ %methods section references
+ \bibitem{GoingTheDist}
+ L.Singer et al. 
+ {\tt arXiv:1603.07333v4 [astro-ph.HE]}, (2016)
+ 
+ \bibitem{codiceGiuseppe}
+ G. Greco, {\it Handling gravitational-wave sky maps with Multi-Order Coverage}, 
+ http://nbviewer.jupyter.org/gist/ggreco77/
+ d43e5a1141b99f918672e70adc05864d
+ 
+ \bibitem{MOC}
+ MOC-HEALPix Multi-Order Coverage map, http://www.ivoa.net/documents/MOC/
+ 
+ \bibitem{GLADE}
+ GLADE catalog on Vizier (Dalya+, 2016), http://vizier.u-strasburg.fr/viz-bin/VizieR?-source=VII\%2F75
+ 
+ \bibitem{Healpy}
+ Healpy https://healpy.readthedocs.io/en/latest/
+ 
+ \bibitem{cohPTF}
+ https://github.com/lscsoft/lalsuite/blob/5a47239a
+ 877032e93b1ca34445640360d6c3c990/lalapps/
+src/ring/coh\_PTF\_inspiral.c
+
+\bibitem{GWSky}
+GWsky-tiling the skymap in FoV, https://github.com/ggreco77/GWsky
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+ 
+\end{thebibliography}
+
+\end{document}
